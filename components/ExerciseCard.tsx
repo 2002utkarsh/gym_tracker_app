@@ -54,10 +54,22 @@ export const ExerciseCard = ({ workoutExercise, currentSets, onSetAdded }: Exerc
 
             {lastStats && lastStats.length > 0 && (
                 <View style={styles.lastStats}>
-                    <Text style={styles.lastStatsTitle}>Previous Best:</Text>
-                    <Text style={styles.lastStatsText}>
-                        {lastStats[0].weight}kg x {lastStats[0].reps}
-                    </Text>
+                    <View>
+                        <Text style={styles.lastStatsTitle}>Previous Best:</Text>
+                        <Text style={styles.lastStatsText}>
+                            {lastStats[0].weight}kg x {lastStats[0].reps}
+                        </Text>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.useLastButton}
+                        onPress={() => {
+                            setWeight(lastStats[0].weight.toString());
+                            setReps(lastStats[0].reps.toString());
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        }}
+                    >
+                        <Text style={styles.useLastButtonText}>Use Last</Text>
+                    </TouchableOpacity>
                 </View>
             )}
 
@@ -145,21 +157,31 @@ const styles = StyleSheet.create({
     lastStats: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         backgroundColor: Colors.surfaceHighlight,
         padding: Spacing.xs,
         borderRadius: BorderRadius.sm,
         marginBottom: Spacing.md,
-        alignSelf: 'flex-start',
     },
     lastStatsTitle: {
         fontSize: 12,
         color: Colors.textSecondary,
-        marginRight: Spacing.xs,
     },
     lastStatsText: {
         fontSize: 12,
         fontWeight: '600',
         color: Colors.primary,
+    },
+    useLastButton: {
+        backgroundColor: Colors.primary,
+        paddingVertical: 4,
+        paddingHorizontal: 12,
+        borderRadius: BorderRadius.sm,
+    },
+    useLastButtonText: {
+        color: Colors.textLight,
+        fontSize: 11,
+        fontWeight: '600',
     },
     tableHeader: {
         flexDirection: 'row',
