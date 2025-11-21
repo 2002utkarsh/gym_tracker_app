@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { getTemplates, WorkoutTemplate } from '../../db/template';
 import { Button } from '../../components/Button';
 import { TemplateCard } from '../../components/TemplateCard';
-import { Colors, Spacing } from '../../constants/theme';
+import { Colors, Spacing, Shadows } from '../../constants/theme';
 
 export default function TemplatesScreen() {
     const router = useRouter();
@@ -22,11 +22,13 @@ export default function TemplatesScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Workout Templates</Text>
-            <Text style={styles.subtitle}>Create reusable workout routines</Text>
+            <View style={styles.header}>
+                <Text style={styles.title}>Workout Templates</Text>
+                <Text style={styles.subtitle}>Create reusable workout routines</Text>
+            </View>
 
             <Button
-                title="Create New Template"
+                title="+ Create New Template"
                 onPress={() => router.push('/templates/create')}
                 style={styles.createButton}
             />
@@ -48,6 +50,7 @@ export default function TemplatesScreen() {
                         <Text style={styles.emptySubtext}>Create your first workout template to get started</Text>
                     </View>
                 }
+                contentContainerStyle={styles.listContent}
             />
         </View>
     );
@@ -56,8 +59,11 @@ export default function TemplatesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: Spacing.lg,
         backgroundColor: Colors.background,
+    },
+    header: {
+        padding: Spacing.lg,
+        paddingBottom: Spacing.md,
     },
     title: {
         fontSize: 28,
@@ -68,22 +74,33 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 16,
         color: Colors.textSecondary,
-        marginBottom: Spacing.lg,
     },
     createButton: {
+        marginHorizontal: Spacing.lg,
         marginBottom: Spacing.lg,
+    },
+    listContent: {
+        paddingHorizontal: Spacing.lg,
+        paddingBottom: Spacing.xl,
     },
     empty: {
         marginTop: Spacing.xl,
         alignItems: 'center',
+        padding: Spacing.xl,
+        backgroundColor: Colors.surface,
+        borderRadius: 12,
+        marginHorizontal: Spacing.lg,
+        ...Shadows.sm,
     },
     emptyText: {
         fontSize: 18,
-        color: Colors.textSecondary,
+        fontWeight: 'bold',
+        color: Colors.text,
         marginBottom: 8,
     },
     emptySubtext: {
         fontSize: 14,
         color: Colors.textSecondary,
+        textAlign: 'center',
     },
 });

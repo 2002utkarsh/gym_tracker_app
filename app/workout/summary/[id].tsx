@@ -6,7 +6,7 @@ import { getWorkout } from '../../../db/workout';
 import { Button } from '../../../components/Button';
 import { ExerciseProgressCard } from '../../../components/ExerciseProgressCard';
 import { ProgressChart } from '../../../components/ProgressChart';
-import { Colors, Spacing, BorderRadius } from '../../../constants/theme';
+import { Colors, Spacing, BorderRadius, Shadows } from '../../../constants/theme';
 
 export default function WorkoutSummaryScreen() {
     const router = useRouter();
@@ -48,99 +48,103 @@ export default function WorkoutSummaryScreen() {
     );
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Workout Complete! 🎉</Text>
-                <Text style={styles.date}>
-                    {new Date(workout.date).toLocaleDateString(undefined, {
-                        weekday: 'long',
-                        month: 'short',
-                        day: 'numeric'
-                    })}
-                </Text>
-            </View>
-
-            <View style={styles.summaryCards}>
-                <View style={styles.summaryCard}>
-                    <Text style={styles.summaryValue}>{summary.total_exercises}</Text>
-                    <Text style={styles.summaryLabel}>Exercises</Text>
-                </View>
-                <View style={styles.summaryCard}>
-                    <Text style={styles.summaryValue}>{summary.total_sets}</Text>
-                    <Text style={styles.summaryLabel}>Total Sets</Text>
-                </View>
-                <View style={styles.summaryCard}>
-                    <Text style={styles.summaryValue}>{Math.round(summary.total_volume)}</Text>
-                    <Text style={styles.summaryLabel}>Volume</Text>
-                </View>
-            </View>
-
-            {prCount > 0 && (
-                <TouchableOpacity
-                    style={styles.achievement}
-                    onPress={() => setPrExpanded(!prExpanded)}
-                    activeOpacity={0.7}
-                >
-                    <View style={styles.achievementHeader}>
-                        <Text style={styles.achievementIcon}>🏆</Text>
-                        <Text style={styles.achievementText}>
-                            {prCount} Personal Record{prCount > 1 ? 's' : ''}!
-                        </Text>
-                        <Text style={styles.expandIcon}>{prExpanded ? '▼' : '▶'}</Text>
-                    </View>
-                    {prExpanded && (
-                        <View style={styles.prDetails}>
-                            {summary.exercises_progress
-                                .filter(e => e.is_pr)
-                                .map(e => {
-                                    const currentMax = Math.max(...e.current_sets.map(s => s.weight));
-                                    const previousMax = Math.max(...e.previous_sets.map(s => s.weight));
-                                    return (
-                                        <View key={e.exercise_id} style={styles.prItem}>
-                                            <Text style={styles.prExerciseName}>{e.exercise_name}</Text>
-                                            <Text style={styles.prWeightChange}>
-                                                {previousMax}kg → {currentMax}kg (+{e.weight_change}kg)
-                                            </Text>
-                                        </View>
-                                    );
-                                })}
-                        </View>
-                    )}
-                </TouchableOpacity>
-            )}
-
-            {improvedCount > 0 && (
-                <View style={styles.achievement}>
-                    <Text style={styles.achievementIcon}>💪</Text>
-                    <Text style={styles.achievementText}>
-                        Increased weight on {improvedCount} exercise{improvedCount > 1 ? 's' : ''}
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.content}>
+                <View style={styles.header}>
+                    <Text style={styles.title}>Workout Complete! 🎉</Text>
+                    <Text style={styles.date}>
+                        {new Date(workout.date).toLocaleDateString(undefined, {
+                            weekday: 'long',
+                            month: 'short',
+                            day: 'numeric'
+                        })}
                     </Text>
                 </View>
-            )}
 
-            {summary.exercises_progress.length > 0 && chartData.length > 0 && (
-                <ProgressChart
-                    data={chartData}
-                    previousData={previousChartData}
-                    labels={chartLabels}
-                    title="Volume Comparison"
-                    showComparison={true}
+                <View style={styles.summaryCards}>
+                    <View style={styles.summaryCard}>
+                        <Text style={styles.summaryValue}>{summary.total_exercises}</Text>
+                        <Text style={styles.summaryLabel}>Exercises</Text>
+                    </View>
+                    <View style={styles.summaryCard}>
+                        <Text style={styles.summaryValue}>{summary.total_sets}</Text>
+                        <Text style={styles.summaryLabel}>Total Sets</Text>
+                    </View>
+                    <View style={styles.summaryCard}>
+                        <Text style={styles.summaryValue}>{Math.round(summary.total_volume)}</Text>
+                        <Text style={styles.summaryLabel}>Volume</Text>
+                    </View>
+                </View>
+
+                {prCount > 0 && (
+                    <TouchableOpacity
+                        style={styles.achievement}
+                        onPress={() => setPrExpanded(!prExpanded)}
+                        activeOpacity={0.7}
+                    >
+                        <View style={styles.achievementHeader}>
+                            <Text style={styles.achievementIcon}>🏆</Text>
+                            <Text style={styles.achievementText}>
+                                {prCount} Personal Record{prCount > 1 ? 's' : ''}!
+                            </Text>
+                            <Text style={styles.expandIcon}>{prExpanded ? '▼' : '▶'}</Text>
+                        </View>
+                        {prExpanded && (
+                            <View style={styles.prDetails}>
+                                {summary.exercises_progress
+                                    .filter(e => e.is_pr)
+                                    .map(e => {
+                                        const currentMax = Math.max(...e.current_sets.map(s => s.weight));
+                                        const previousMax = Math.max(...e.previous_sets.map(s => s.weight));
+                                        return (
+                                            <View key={e.exercise_id} style={styles.prItem}>
+                                                <Text style={styles.prExerciseName}>{e.exercise_name}</Text>
+                                                <Text style={styles.prWeightChange}>
+                                                    {previousMax}kg → {currentMax}kg (+{e.weight_change}kg)
+                                                </Text>
+                                            </View>
+                                        );
+                                    })}
+                            </View>
+                        )}
+                    </TouchableOpacity>
+                )}
+
+                {improvedCount > 0 && (
+                    <View style={styles.achievement}>
+                        <Text style={styles.achievementIcon}>💪</Text>
+                        <Text style={styles.achievementText}>
+                            Increased weight on {improvedCount} exercise{improvedCount > 1 ? 's' : ''}
+                        </Text>
+                    </View>
+                )}
+
+                {summary.exercises_progress.length > 0 && chartData.length > 0 && (
+                    <ProgressChart
+                        data={chartData}
+                        previousData={previousChartData}
+                        labels={chartLabels}
+                        title="Volume Comparison"
+                        showComparison={true}
+                    />
+                )}
+
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Exercise Performance</Text>
+                    {summary.exercises_progress.map(progress => (
+                        <ExerciseProgressCard key={progress.exercise_id} progress={progress} />
+                    ))}
+                </View>
+            </ScrollView>
+
+            <View style={styles.footer}>
+                <Button
+                    title="Back to Home"
+                    onPress={() => router.replace('/')}
+                    size="large"
                 />
-            )}
-
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Exercise Performance</Text>
-                {summary.exercises_progress.map(progress => (
-                    <ExerciseProgressCard key={progress.exercise_id} progress={progress} />
-                ))}
             </View>
-
-            <Button
-                title="Back to Home"
-                onPress={() => router.replace('/')}
-                style={styles.homeButton}
-            />
-        </ScrollView>
+        </View>
     );
 }
 
@@ -151,15 +155,18 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: Spacing.lg,
+        paddingBottom: 100,
     },
     header: {
         marginBottom: Spacing.lg,
+        alignItems: 'center',
     },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
         color: Colors.text,
         marginBottom: 4,
+        textAlign: 'center',
     },
     date: {
         fontSize: 16,
@@ -177,9 +184,10 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         alignItems: 'center',
         marginHorizontal: 4,
+        ...Shadows.sm,
     },
     summaryValue: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: 'bold',
         color: Colors.primary,
         marginBottom: 4,
@@ -249,8 +257,15 @@ const styles = StyleSheet.create({
         color: Colors.text,
         marginBottom: Spacing.md,
     },
-    homeButton: {
-        marginTop: Spacing.lg,
-        marginBottom: Spacing.xl,
+    footer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: Colors.surface,
+        padding: Spacing.lg,
+        borderTopWidth: 1,
+        borderTopColor: Colors.border,
+        ...Shadows.md,
     },
 });

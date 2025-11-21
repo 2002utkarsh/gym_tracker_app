@@ -57,37 +57,45 @@ export default function TemplateDetailScreen() {
     }
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            <Text style={styles.title}>{template.name}</Text>
-            {template.description && (
-                <Text style={styles.description}>{template.description}</Text>
-            )}
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.content}>
+                <View style={styles.header}>
+                    <Text style={styles.title}>{template.name}</Text>
+                    {template.description && (
+                        <Text style={styles.description}>{template.description}</Text>
+                    )}
+                </View>
 
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Exercises ({exercises.length})</Text>
-                {exercises.map((ex, index) => (
-                    <View key={ex.id} style={styles.exerciseItem}>
-                        <Text style={styles.exerciseNumber}>{index + 1}</Text>
-                        <Text style={styles.exerciseName}>{ex.exercise_name}</Text>
-                    </View>
-                ))}
-            </View>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Exercises ({exercises.length})</Text>
+                    {exercises.map((ex, index) => (
+                        <View key={ex.id} style={styles.exerciseItem}>
+                            <View style={styles.exerciseNumberContainer}>
+                                <Text style={styles.exerciseNumber}>{index + 1}</Text>
+                            </View>
+                            <Text style={styles.exerciseName}>{ex.exercise_name}</Text>
+                        </View>
+                    ))}
+                </View>
+
+                <Button
+                    title="Delete Template"
+                    variant="danger"
+                    onPress={handleDelete}
+                    style={styles.deleteButton}
+                />
+            </ScrollView>
 
             {exercises.length > 0 && (
-                <Button
-                    title="Start Workout from Template"
-                    onPress={handleStartWorkout}
-                    style={styles.button}
-                />
+                <View style={styles.footer}>
+                    <Button
+                        title="Start Workout"
+                        onPress={handleStartWorkout}
+                        size="large"
+                    />
+                </View>
             )}
-
-            <Button
-                title="Delete Template"
-                variant="danger"
-                onPress={handleDelete}
-                style={styles.button}
-            />
-        </ScrollView>
+        </View>
     );
 }
 
@@ -98,17 +106,21 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: Spacing.lg,
+        paddingBottom: 100, // Space for footer
+    },
+    header: {
+        marginBottom: Spacing.xl,
     },
     title: {
-        fontSize: 28,
+        fontSize: 32,
         fontWeight: 'bold',
         color: Colors.text,
-        marginBottom: 8,
+        marginBottom: Spacing.sm,
     },
     description: {
         fontSize: 16,
         color: Colors.textSecondary,
-        marginBottom: Spacing.lg,
+        lineHeight: 24,
     },
     section: {
         marginBottom: Spacing.xl,
@@ -124,24 +136,43 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: Colors.surface,
         padding: Spacing.md,
-        borderRadius: BorderRadius.md,
+        borderRadius: BorderRadius.lg,
         marginBottom: Spacing.sm,
         ...Shadows.sm,
     },
+    exerciseNumberContainer: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        backgroundColor: Colors.surfaceHighlight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: Spacing.md,
+    },
     exerciseNumber: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
         color: Colors.primary,
-        marginRight: Spacing.md,
-        width: 24,
     },
     exerciseName: {
         fontSize: 16,
+        fontWeight: '500',
         color: Colors.text,
         flex: 1,
     },
-    button: {
-        marginBottom: Spacing.md,
+    deleteButton: {
+        marginTop: Spacing.lg,
+    },
+    footer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: Colors.surface,
+        padding: Spacing.lg,
+        borderTopWidth: 1,
+        borderTopColor: Colors.border,
+        ...Shadows.md, // Add shadow for separation
     },
     error: {
         fontSize: 16,

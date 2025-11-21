@@ -39,3 +39,19 @@ export const getRecentWorkouts = (limit: number = 5): RecentWorkout[] => {
         [limit]
     ) as RecentWorkout[];
 };
+
+export const getWeeklyWorkoutCount = (): number => {
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    if (Platform.OS === 'web') {
+        return mockState.workouts.filter(w => w.date >= oneWeekAgo).length;
+    }
+
+    const result = db.getAllSync(
+        'SELECT COUNT(*) as count FROM workouts WHERE date >= ?',
+        [oneWeekAgo]
+    ) as { count: number }[];
+
+    return result[0]?.count || 0;
+};

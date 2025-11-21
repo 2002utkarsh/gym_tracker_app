@@ -89,120 +89,121 @@ export default function CreateTemplateScreen() {
     };
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            <Text style={styles.title}>Create Workout Template</Text>
+        <View style={styles.container}>
+            <ScrollView style={styles.scrollContent} contentContainerStyle={styles.content}>
+                <Text style={styles.title}>Create Workout Template</Text>
 
-            <Input
-                label="Template Name"
-                value={name}
-                onChangeText={setName}
-                placeholder="e.g., Upper Body Day"
-            />
-
-            <Input
-                label="Description (Optional)"
-                value={description}
-                onChangeText={setDescription}
-                placeholder="e.g., Push exercises for chest and shoulders"
-                multiline
-                numberOfLines={3}
-                style={styles.descriptionInput}
-            />
-
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Exercises ({selectedExercises.length})</Text>
-
-                {selectedExercises.map((exercise, index) => (
-                    <View key={exercise.id} style={styles.exerciseItem}>
-                        <Text style={styles.exerciseNumber}>{index + 1}</Text>
-                        <View style={styles.exerciseInfo}>
-                            <Text style={styles.exerciseName}>{exercise.name}</Text>
-                            {exercise.is_custom === 1 && (
-                                <View style={styles.customBadge}>
-                                    <Text style={styles.customBadgeText}>Custom</Text>
-                                </View>
-                            )}
-                        </View>
-                        <TouchableOpacity onPress={() => handleRemoveExercise(exercise.id)}>
-                            <Text style={styles.removeButton}>✕</Text>
-                        </TouchableOpacity>
-                    </View>
-                ))}
-
-                <Button
-                    title="+ Add Exercise"
-                    variant="secondary"
-                    onPress={() => setShowExercisePicker(!showExercisePicker)}
-                    style={styles.addButton}
+                <Input
+                    label="Template Name"
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="e.g., Upper Body Day"
                 />
-            </View>
 
-            {showExercisePicker && (
-                <View style={styles.picker}>
-                    <Text style={styles.pickerTitle}>Select Exercise</Text>
+                <Input
+                    label="Description (Optional)"
+                    value={description}
+                    onChangeText={setDescription}
+                    placeholder="e.g., Push exercises for chest and shoulders"
+                    multiline
+                    numberOfLines={3}
+                    style={styles.descriptionInput}
+                />
 
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Search exercises..."
-                        placeholderTextColor={Colors.textSecondary}
-                        value={searchQuery}
-                        onChangeText={setSearchQuery}
-                    />
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Exercises ({selectedExercises.length})</Text>
+
+                    {selectedExercises.map((exercise, index) => (
+                        <View key={exercise.id} style={styles.exerciseItem}>
+                            <Text style={styles.exerciseNumber}>{index + 1}</Text>
+                            <View style={styles.exerciseInfo}>
+                                <Text style={styles.exerciseName}>{exercise.name}</Text>
+                                {exercise.is_custom === 1 && (
+                                    <View style={styles.customBadge}>
+                                        <Text style={styles.customBadgeText}>Custom</Text>
+                                    </View>
+                                )}
+                            </View>
+                            <TouchableOpacity onPress={() => handleRemoveExercise(exercise.id)}>
+                                <Text style={styles.removeButton}>✕</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ))}
 
                     <Button
-                        title="➕ Create New Exercise"
-                        variant="outline"
-                        onPress={() => setShowAddModal(true)}
-                        style={styles.createExerciseButton}
-                    />
-
-                    <FlatList
-                        data={filteredExercises}
-                        keyExtractor={item => item.id.toString()}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={styles.pickerItem}
-                                onPress={() => handleAddExercise(item)}
-                            >
-                                <View style={styles.pickerItemContent}>
-                                    <View style={styles.pickerItemInfo}>
-                                        <Text style={styles.pickerItemName}>{item.name}</Text>
-                                        <Text style={styles.pickerItemMuscle}>{item.muscle_group}</Text>
-                                    </View>
-                                    {item.is_custom === 1 && (
-                                        <View style={styles.customBadge}>
-                                            <Text style={styles.customBadgeText}>Custom</Text>
-                                        </View>
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-                        )}
-                        ListEmptyComponent={
-                            searchQuery.length > 0 ? (
-                                <View style={styles.emptyState}>
-                                    <Text style={styles.emptyText}>No exercises found</Text>
-                                    <Button
-                                        title={`Create "${searchQuery}"`}
-                                        variant="secondary"
-                                        onPress={handleQuickCreate}
-                                        style={{ marginTop: Spacing.sm }}
-                                    />
-                                </View>
-                            ) : null
-                        }
-                        style={styles.pickerList}
-                        nestedScrollEnabled={true}
-                        scrollEnabled={true}
+                        title="+ Add Exercise"
+                        variant="secondary"
+                        onPress={() => setShowExercisePicker(!showExercisePicker)}
+                        style={styles.addButton}
                     />
                 </View>
-            )}
 
-            <Button
-                title="Create Template"
-                onPress={handleCreate}
-                disabled={!name.trim() || selectedExercises.length === 0}
-                style={styles.createButton}
-            />
+                {showExercisePicker && (
+                    <View style={styles.picker}>
+                        <Text style={styles.pickerTitle}>Select Exercise</Text>
+
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search exercises..."
+                            placeholderTextColor={Colors.textSecondary}
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                        />
+
+                        <Button
+                            title="➕ Create New Exercise"
+                            variant="outline"
+                            onPress={() => setShowAddModal(true)}
+                            style={styles.createExerciseButton}
+                        />
+
+                        <FlatList
+                            data={filteredExercises}
+                            keyExtractor={item => item.id.toString()}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity
+                                    style={styles.pickerItem}
+                                    onPress={() => handleAddExercise(item)}
+                                >
+                                    <View style={styles.pickerItemContent}>
+                                        <View style={styles.pickerItemInfo}>
+                                            <Text style={styles.pickerItemName}>{item.name}</Text>
+                                            <Text style={styles.pickerItemMuscle}>{item.muscle_group}</Text>
+                                        </View>
+                                        {item.is_custom === 1 && (
+                                            <View style={styles.customBadge}>
+                                                <Text style={styles.customBadgeText}>Custom</Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            ListEmptyComponent={
+                                searchQuery.length > 0 ? (
+                                    <View style={styles.emptyState}>
+                                        <Text style={styles.emptyText}>No exercises found</Text>
+                                        <Button
+                                            title={`Create "${searchQuery}"`}
+                                            variant="secondary"
+                                            onPress={handleQuickCreate}
+                                            style={{ marginTop: Spacing.sm }}
+                                        />
+                                    </View>
+                                ) : null
+                            }
+                            style={styles.pickerList}
+                            scrollEnabled={true}
+                        />
+                    </View>
+                )}
+
+                <Button
+                    title="Create Template"
+                    onPress={handleCreate}
+                    disabled={!name.trim() || selectedExercises.length === 0}
+                    style={styles.createButton}
+                />
+            </ScrollView>
 
             <Modal
                 visible={showAddModal}
@@ -251,7 +252,7 @@ export default function CreateTemplateScreen() {
                     </View>
                 </View>
             </Modal>
-        </ScrollView>
+        </View>
     );
 }
 
@@ -259,6 +260,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.background,
+    },
+    scrollContent: {
+        flex: 1,
     },
     content: {
         padding: Spacing.lg,

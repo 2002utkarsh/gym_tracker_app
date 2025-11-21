@@ -34,10 +34,7 @@ export function deleteWorkout(workoutId: number): void {
     if (Platform.OS === 'web') {
         // Delete from mock state
         // Delete sets for this workout
-        mockState.sets = mockState.sets.filter((set: any) => {
-            const exerciseMatch = mockState.workoutExercises.find((we: any) => we.id === set.workout_exercise_id);
-            return !exerciseMatch || exerciseMatch.workout_id !== workoutId;
-        });
+        mockState.sets = mockState.sets.filter((s: any) => s.workout_id !== workoutId);
         // Delete workout exercises
         mockState.workoutExercises = mockState.workoutExercises.filter((we: any) => we.workout_id !== workoutId);
         // Delete workout

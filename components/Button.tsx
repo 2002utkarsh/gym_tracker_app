@@ -6,12 +6,13 @@ interface ButtonProps {
     title: string;
     onPress: () => void;
     variant?: 'primary' | 'secondary' | 'danger' | 'outline';
+    size?: 'small' | 'medium' | 'large';
     loading?: boolean;
     disabled?: boolean;
     style?: ViewStyle;
 }
 
-export const Button = ({ title, onPress, variant = 'primary', loading = false, disabled = false, style }: ButtonProps) => {
+export const Button = ({ title, onPress, variant = 'primary', size = 'medium', loading = false, disabled = false, style }: ButtonProps) => {
     const getBackgroundColor = () => {
         if (disabled) return Colors.border;
         switch (variant) {
@@ -39,12 +40,29 @@ export const Button = ({ title, onPress, variant = 'primary', loading = false, d
         return {};
     };
 
+    const getPadding = () => {
+        switch (size) {
+            case 'small': return { paddingVertical: Spacing.xs, paddingHorizontal: Spacing.md };
+            case 'large': return { paddingVertical: Spacing.md + 4, paddingHorizontal: Spacing.xl };
+            default: return { paddingVertical: Spacing.md, paddingHorizontal: Spacing.lg };
+        }
+    };
+
+    const getFontSize = () => {
+        switch (size) {
+            case 'small': return 14;
+            case 'large': return 18;
+            default: return 16;
+        }
+    };
+
     return (
         <TouchableOpacity
             style={[
                 styles.button,
                 { backgroundColor: getBackgroundColor() },
                 getBorder(),
+                getPadding(),
                 style
             ]}
             onPress={onPress}
@@ -54,7 +72,7 @@ export const Button = ({ title, onPress, variant = 'primary', loading = false, d
             {loading ? (
                 <ActivityIndicator color={getTextColor()} />
             ) : (
-                <Text style={[styles.text, { color: getTextColor() }]}>{title}</Text>
+                <Text style={[styles.text, { color: getTextColor(), fontSize: getFontSize() }]}>{title}</Text>
             )}
         </TouchableOpacity>
     );
@@ -62,15 +80,12 @@ export const Button = ({ title, onPress, variant = 'primary', loading = false, d
 
 const styles = StyleSheet.create({
     button: {
-        paddingVertical: Spacing.md,
-        paddingHorizontal: Spacing.lg,
         borderRadius: BorderRadius.md,
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: Spacing.sm,
     },
     text: {
-        fontSize: 16,
         fontWeight: '600',
         letterSpacing: 0.5,
     },

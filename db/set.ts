@@ -30,6 +30,21 @@ export const addSet = (workoutId: number, exerciseId: number, weight: number, re
     );
 };
 
+export const updateSet = (id: number, weight: number, reps: number) => {
+    if (Platform.OS === 'web') {
+        const set = mockState.sets.find(s => s.id === id);
+        if (set) {
+            set.weight = weight;
+            set.reps = reps;
+        }
+        return;
+    }
+    db.runSync(
+        'UPDATE sets SET weight = ?, reps = ? WHERE id = ?',
+        [weight, reps, id]
+    );
+};
+
 export const getSetsForWorkout = (workoutId: number): Set[] => {
     if (Platform.OS === 'web') {
         return mockState.sets
