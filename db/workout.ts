@@ -45,12 +45,7 @@ export function deleteWorkout(workoutId: number): void {
     // Delete from native database
     db.withTransactionSync(() => {
         // Delete sets (via workout_exercises)
-        db.runSync(`
-            DELETE FROM sets 
-            WHERE workout_exercise_id IN (
-                SELECT id FROM workout_exercises WHERE workout_id = ?
-            )
-        `, [workoutId]);
+        db.runSync('DELETE FROM sets WHERE workout_id = ?', [workoutId]);
 
         // Delete workout exercises
         db.runSync('DELETE FROM workout_exercises WHERE workout_id = ?', [workoutId]);

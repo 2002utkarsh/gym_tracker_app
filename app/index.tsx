@@ -21,7 +21,12 @@ export default function HomeScreen() {
 
     useFocusEffect(
         useCallback(() => {
-            loadData();
+            const currentUser = getUser();
+            if (!currentUser) {
+                router.replace('/profile');
+            } else {
+                loadData();
+            }
         }, [loadData])
     );
 
