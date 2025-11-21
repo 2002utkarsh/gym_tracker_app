@@ -2,7 +2,7 @@
 
 I built this app because I was facing a problem tracking my sets effectively during workouts. I found that existing solutions were often too cluttered or didn't quite match my workflow. I needed something simple, fast, and focused on what matters: logging sets, tracking progress, and getting stronger.
 
-So, I decided to build this Gym Tracker to solve my own problem. It's designed to be the perfect companion for the gym—no distractions, just results.
+So, I decided to build this Gym Tracker to solve my own problem. It's designed to be the perfect companion for the gym, no distractions, just results.
 
 ## Features
 
