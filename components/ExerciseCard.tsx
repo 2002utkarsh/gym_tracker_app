@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { Set, getLastWorkoutStats, addSet, updateSet } from '../db/set';
 import { WorkoutExercise } from '../db/workout_exercise';
 import { Colors, Spacing, BorderRadius, Shadows } from '../constants/theme';
@@ -30,6 +31,9 @@ export const ExerciseCard = ({ workoutExercise, currentSets, onSetAdded }: Exerc
             parseInt(reps),
             currentSets.length + 1
         );
+
+        // Haptic feedback on set completion
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
         setWeight(currentSets.length > 0 ? currentSets[currentSets.length - 1].weight.toString() : weight);
         setReps('');

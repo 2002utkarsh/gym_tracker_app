@@ -15,6 +15,11 @@ const GOAL_OPTIONS = [
     { label: 'General Fitness', value: 'General Fitness' },
 ];
 
+const UNIT_OPTIONS = [
+    { label: 'Kilograms (kg)', value: 'kg' },
+    { label: 'Pounds (lbs)', value: 'lbs' },
+];
+
 export default function ProfileScreen() {
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
@@ -22,6 +27,7 @@ export default function ProfileScreen() {
     const [weight, setWeight] = useState('');
     const [height, setHeight] = useState('');
     const [goal, setGoal] = useState('');
+    const [unit, setUnit] = useState('kg');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
@@ -32,6 +38,7 @@ export default function ProfileScreen() {
             setWeight(existingUser.weight.toString());
             setHeight(existingUser.height.toString());
             setGoal(existingUser.goal);
+            setUnit(existingUser.unit || 'kg');
         }
     }, []);
 
@@ -54,11 +61,11 @@ export default function ProfileScreen() {
 
         try {
             if (user) {
-                updateUser(user.id, name, parseFloat(weight), parseFloat(height), goal);
+                updateUser(user.id, name, parseFloat(weight), parseFloat(height), goal, unit);
                 Alert.alert('Success', 'Profile updated!');
                 router.back();
             } else {
-                createUser(name, parseFloat(weight), parseFloat(height), goal);
+                createUser(name, parseFloat(weight), parseFloat(height), goal, unit);
                 router.replace('/');
             }
         } catch (e) {
@@ -129,6 +136,14 @@ export default function ProfileScreen() {
                         }}
                         placeholder="Select your goal"
                         error={errors.goal}
+                    />
+
+                    <Select
+                        label="Weight Unit"
+                        value={unit}
+                        options={UNIT_OPTIONS}
+                        onSelect={setUnit}
+                        placeholder="Select unit"
                     />
                 </View>
 

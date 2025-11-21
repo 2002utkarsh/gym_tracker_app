@@ -25,7 +25,8 @@ export const initDatabase = () => {
       name TEXT,
       weight REAL,
       height REAL,
-      goal TEXT
+      goal TEXT,
+      unit TEXT DEFAULT 'kg'
     );
 
     CREATE TABLE IF NOT EXISTS exercises (

@@ -1,11 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { getWorkout, Workout } from '../../db/workout';
 import { getWorkoutExercises, WorkoutExercise } from '../../db/workout_exercise';
 import { getSetsForWorkout, Set } from '../../db/set';
+import { getUser, User } from '../../db/user';
 import { Button } from '../../components/Button';
 import { ExerciseCard } from '../../components/ExerciseCard';
+import { FloatingActionButton } from '../../components/FloatingActionButton';
 import { Colors, Spacing, Shadows } from '../../constants/theme';
 
 export default function WorkoutScreen() {
@@ -14,17 +16,22 @@ export default function WorkoutScreen() {
     const [workout, setWorkout] = useState<Workout | null>(null);
     const [exercises, setExercises] = useState<WorkoutExercise[]>([]);
     const [sets, setSets] = useState<Set[]>([]);
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [elapsedSeconds, setElapsedSeconds] = useState(0);
+    const [timerActive, setTimerActive] = useState(false);
 
     const loadData = useCallback(() => {
         if (!id) return;
         const w = getWorkout(Number(id));
         const e = getWorkoutExercises(Number(id));
         const s = getSetsForWorkout(Number(id));
+        const u = getUser();
 
         setWorkout(w);
         setExercises(e);
         setSets(s);
+        setUser(u);
         setLoading(false);
     }, [id]);
 
@@ -35,7 +42,32 @@ export default function WorkoutScreen() {
     );
 
     const handleSetAdded = () => {
+        if (!timerActive) {
+            setTimerActive(true); // Start timer on first set
+        }
         loadData(); // Refresh sets
+    };
+
+    // Timer effect
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (timerActive) {
+            interval = setInterval(() => {
+                setElapsedSeconds(prev => prev + 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [timerActive]);
+
+    // Format elapsed time
+    const formatDuration = (seconds: number) => {
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        if (hrs > 0) {
+            return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
     if (loading) {
@@ -67,7 +99,10 @@ export default function WorkoutScreen() {
                             })}
                         </Text>
                     </View>
-                    {/* Placeholder for timer or other header actions */}
+                    <View style={styles.timerContainer}>
+                        <Text style={styles.timerLabel}>DURATION</Text>
+                        <Text style={styles.timerValue}>{formatDuration(elapsedSeconds)}</Text>
+                    </View>
                 </View>
 
                 <FlatList
@@ -78,6 +113,7 @@ export default function WorkoutScreen() {
                             workoutExercise={item}
                             currentSets={sets.filter(s => s.exercise_id === item.exercise_id)}
                             onSetAdded={handleSetAdded}
+                            unit={user?.unit || 'kg'}
                         />
                     )}
                     contentContainerStyle={styles.listContent}
@@ -91,14 +127,11 @@ export default function WorkoutScreen() {
                     }
                 />
 
-                <View style={styles.footer}>
-                    <Button
-                        title="Finish Workout"
-                        size="large"
-                        onPress={() => router.push(`/workout/summary/${id}`)}
-                        style={styles.finishButton}
-                    />
-                </View>
+                <FloatingActionButton
+                    label="Finish Workout"
+                    icon="✓"
+                    onPress={() => router.push(`/workout/summary/${id}`)}
+                />
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
@@ -160,5 +193,21 @@ const styles = StyleSheet.create({
     },
     finishButton: {
         width: '100%',
+    },
+    timerContainer: {
+        alignItems: 'flex-end',
+    },
+    timerLabel: {
+        fontSize: 10,
+        color: Colors.textSecondary,
+        fontWeight: '600',
+        letterSpacing: 0.5,
+        marginBottom: 2,
+    },
+    timerValue: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: Colors.primary,
+        fontVariant: ['tabular-nums'],
     },
 });
